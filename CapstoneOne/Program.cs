@@ -55,6 +55,20 @@ namespace CapstoneOne
         }
 
 
+        private static string[] StringSplit(string input, out bool empty)
+        {
+            string[] words = input.Split(' ');
+            words = words.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            //removes null and empty locations in array (for the most part)
+            if(words.Length==0)
+            {
+                empty = true;
+                return words;
+            }
+            empty = false;
+            return words;
+        }
+
         private static string[] PigLatin(string[] word)
         {
             for (int i = 0; i < word.Length; i++)
@@ -64,15 +78,20 @@ namespace CapstoneOne
                 int firstVowel = VowelLocation(word[i].ToLower());
                 if (HasNonLetter(word[i]) && !IsContraction(word[i]))
                 {
+                    //we need to check if the non letter is punctuation and if so keep it at end of word
                     if (HasProperPunctuation(word[i]))
                     {
                         word[i] = PigLatinPunc(word[i], firstVowel);
                     }
-                    else { word[i] = word[i]; }
+                    else
+                    {
+                        word[i] = word[i];
+                    }
                    
                 }
-                else if (firstVowel == 0)
+                else if (firstVowel == 0) 
                 {
+                    //covers words with vowels as first letters and words without vowels such as "by"
                     word[i] = word[i] + "way";
                 }
                 else
@@ -94,10 +113,14 @@ namespace CapstoneOne
             if (HasNonLetter(word))
             {
                 //do nothing
+                //This covers words that have punctuation at the end and have a non letter in it.
+                //I ran into this issue when dealing with email addresses at the end of sentances.
             }
             else if (string.IsNullOrEmpty(word))
             {
                 //do nothing
+                //I ran into a situation when typing in a word followed by "..." and space would cause
+                //a run time error. This covers that issue.
             }
             else if (firstVowel == 0)
             {
@@ -111,21 +134,6 @@ namespace CapstoneOne
             }
 
             return word + last + "";
-        }
-
-        private static bool HasProperPunctuation(string word)
-        {
-            char[] punctuation = new char[] { '.', '?', '!', ','};
-            char last = word[word.Length - 1];
-
-            for (int i = 0; i < punctuation.Length; i++)
-            {
-                if(last == punctuation[i])
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         private static string PassCapitalLocation(string word, bool[] isCapital)
@@ -144,6 +152,25 @@ namespace CapstoneOne
             }
             string temp = string.Join("", tempChar);
             return temp;
+        }
+
+        private static int VowelLocation(string word)
+        {
+            char[] vowels = new char[] {'a', 'e', 'i','o','u' };
+            char[] stringArray = word.ToCharArray();
+            int location = 0;
+            for (int i = 0; i < stringArray.Length; i++)
+            {
+                for (int j = 0; j < vowels.Length; j++)
+                {
+                    if(stringArray[i] == vowels[j])
+                    {
+                        return location;
+                    }
+                }
+                location++;
+            }
+            return 0; //no vowels
         }
 
         private static bool[] getCapitalLetterLoc(char[] charArray)
@@ -169,27 +196,15 @@ namespace CapstoneOne
             return isUpper;
         }
 
-        private static string[] StringSplit(string input, out bool empty)
-        {
-            string[] words = input.Split(' ');
-            words = words.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            //removes null and empty locations in array
-            if(words.Length==0)
-            {
-                empty = true;
-                return words;
-            }
-            empty = false;
-            return words;
-        }
-
         private static bool HasNonLetter(string word)
         {
+            //possibly un-needed but cleaned up code when using
             return !(word.All(Char.IsLetter));
         }
 
         private static bool IsContraction(string word)
         {
+            //Method to check for the "don't, can't, ect." of the english language
             char[] stringArray = word.ToCharArray();
             for (int i = 0; i < stringArray.Length; i++)
             {
@@ -202,23 +217,19 @@ namespace CapstoneOne
             return false;
         }
 
-        private static int VowelLocation(string word)
+        private static bool HasProperPunctuation(string word)
         {
-            char[] vowels = new char[] {'a', 'e', 'i','o','u' };
-            char[] stringArray = word.ToCharArray();
-            int location = 0;
-            for (int i = 0; i < stringArray.Length; i++)
+            char[] punctuation = new char[] { '.', '?', '!', ','};
+            char last = word[word.Length - 1];
+
+            for (int i = 0; i < punctuation.Length; i++)
             {
-                for (int j = 0; j < vowels.Length; j++)
+                if(last == punctuation[i])
                 {
-                    if(stringArray[i] == vowels[j])
-                    {
-                        return location;
-                    }
+                    return true;
                 }
-                location++;
             }
-            return 0; //no vowels
+            return false;
         }
 
         private static bool YesOrNo()
