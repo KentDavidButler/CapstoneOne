@@ -1,4 +1,19 @@
-﻿using System;
+﻿/*Written by Kent Butler
+ *Written between 1/18 and 1/19
+ * 
+ * The following program is a pig latin translator.The program will translate any word that consists 
+ * of characters only. If the word has any characters or punctuation at the beginning or within it,
+ * the word will not get translated. The following punctuation will remain in its correct location
+ * within the sentance or sentances: ',' '.' '!' '?'.
+ * 
+ * This program will also keep capitalization in the translated word same character space. For example, 
+ * SoMeThInG would become OmEtHiNgSay. To further explain, it checks X character at Location Y within
+ * the word and if that character at location Y is capital, the program will ensure that the translated
+ * word has a capital letter at location Y.
+ * 
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +31,7 @@ namespace CapstoneOne
                 string[] words;
                 string input, output;
 
-                Console.Write("Please type a word or sentance to translate: ");
+                Console.Write("Please type a word, a sentance, or sentances to translate: ");
                 input = Console.ReadLine();
                 words = StringSplit(input, out bool empty);
 
@@ -49,7 +64,12 @@ namespace CapstoneOne
                 int firstVowel = VowelLocation(word[i].ToLower());
                 if (HasNonLetter(word[i]) && !IsContraction(word[i]))
                 {
-                    word[i] = word[i];
+                    if (HasProperPunctuation(word[i]))
+                    {
+                        word[i] = PigLatinPunc(word[i], firstVowel);
+                    }
+                    else { word[i] = word[i]; }
+                   
                 }
                 else if (firstVowel == 0)
                 {
@@ -64,6 +84,48 @@ namespace CapstoneOne
                 word[i] = PassCapitalLocation(word[i], isCapital) + "";
             }
             return word;
+        }
+
+        private static string PigLatinPunc(string word, int firstVowel)
+        {
+            char last = word[word.Length - 1];
+            word = word.TrimEnd(last);
+
+            if (HasNonLetter(word))
+            {
+                //do nothing
+            }
+            else if (string.IsNullOrEmpty(word))
+            {
+                //do nothing
+            }
+            else if (firstVowel == 0)
+            {
+                word = word + "way";
+            }
+            else
+            {
+                string wordManip = word;
+                char[] stringArray = wordManip.ToCharArray();
+                word = wordManip.Substring(firstVowel) + wordManip.Substring(0, firstVowel) + "ay";
+            }
+
+            return word + last + "";
+        }
+
+        private static bool HasProperPunctuation(string word)
+        {
+            char[] punctuation = new char[] { '.', '?', '!', ','};
+            char last = word[word.Length - 1];
+
+            for (int i = 0; i < punctuation.Length; i++)
+            {
+                if(last == punctuation[i])
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static string PassCapitalLocation(string word, bool[] isCapital)
@@ -86,6 +148,7 @@ namespace CapstoneOne
 
         private static bool[] getCapitalLetterLoc(char[] charArray)
         {
+            //snags the capital letter location of a string and returns it to a bool array
             char[] localArray = new char[charArray.Length];
             Array.Copy(charArray, localArray, localArray.Length);
 
@@ -94,7 +157,14 @@ namespace CapstoneOne
             for (int i = 0; i < localArray.Length; i++)
             {
                 temp = localArray[i];
-                isUpper[i] = char.IsUpper(localArray[i]);
+                if (Char.IsLetter(temp)) //validate that input is a character
+                {
+                    isUpper[i] = char.IsUpper(localArray[i]);
+                }
+                else
+                {
+                    isUpper[i] = false;
+                }
             }
             return isUpper;
         }
@@ -148,7 +218,7 @@ namespace CapstoneOne
                 }
                 location++;
             }
-            return -1; //something went wrong
+            return 0; //no vowels
         }
 
         private static bool YesOrNo()
