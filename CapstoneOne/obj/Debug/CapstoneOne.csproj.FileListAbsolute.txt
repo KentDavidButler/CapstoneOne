@@ -1,0 +1,7 @@
+C:\Users\Administrator\source\repos\GrandCircus\CapstoneOne\CapstoneOne\bin\Debug\CapstoneOne.exe.config
+C:\Users\Administrator\source\repos\GrandCircus\CapstoneOne\CapstoneOne\bin\Debug\CapstoneOne.exe
+C:\Users\Administrator\source\repos\GrandCircus\CapstoneOne\CapstoneOne\bin\Debug\CapstoneOne.pdb
+C:\Users\Administrator\source\repos\GrandCircus\CapstoneOne\CapstoneOne\obj\Debug\CapstoneOne.csprojAssemblyReference.cache
+C:\Users\Administrator\source\repos\GrandCircus\CapstoneOne\CapstoneOne\obj\Debug\CapstoneOne.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\GrandCircus\CapstoneOne\CapstoneOne\obj\Debug\CapstoneOne.exe
+C:\Users\Administrator\source\repos\GrandCircus\CapstoneOne\CapstoneOne\obj\Debug\CapstoneOne.pdb
