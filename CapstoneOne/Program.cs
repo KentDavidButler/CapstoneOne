@@ -13,27 +13,22 @@ namespace CapstoneOne
             Console.WriteLine("Welcome to the Pig Latin Translator!");
             do
             {
-                string[] words, ordsay;
-                string input;
+                string[] words;
+                string input, output;
 
                 Console.Write("Please type a word or sentance to translate: ");
                 input = Console.ReadLine();
                 words = StringSplit(input, out bool empty);
+
                 if (empty)
                 {
                     Console.WriteLine("You need to enter something!");
                 }
                 else
                 {
-                    ordsay = PigLatin(words);
-                    for (int i = 0; i < ordsay.Length; i++)
-                    {
-                        Console.WriteLine(ordsay[i]);
-                    }
-                    for (int i = 0; i < words.Length; i++)
-                    {
-                        Console.WriteLine(words[i]);
-                    }
+                    words = PigLatin(words);
+                    output = String.Join(" ", words);
+                    Console.WriteLine(output);
                 }
 
                 Console.WriteLine(" ");
@@ -49,6 +44,8 @@ namespace CapstoneOne
         {
             for (int i = 0; i < word.Length; i++)
             {
+                bool[] isCapital = getCapitalLetterLoc(word[i].ToCharArray()) ;
+
                 int firstVowel = VowelLocation(word[i].ToLower());
                 if (HasNonLetter(word[i]) && !IsContraction(word[i]))
                 {
@@ -64,8 +61,42 @@ namespace CapstoneOne
                     char[] stringArray = wordManip.ToCharArray();
                     word[i] = wordManip.Substring(firstVowel) + wordManip.Substring(0, firstVowel) + "ay";
                 }
+                word[i] = PassCapitalLocation(word[i], isCapital) + "";
             }
             return word;
+        }
+
+        private static string PassCapitalLocation(string word, bool[] isCapital)
+        {
+            char[] tempChar = word.ToCharArray();
+            for (int i = 0; i < isCapital.Length; i++)
+            {
+                if(isCapital[i])
+                {
+                    tempChar[i] = char.ToUpper(tempChar[i]);
+                }
+                else
+                {
+                    tempChar[i] = char.ToLower(tempChar[i]);
+                }
+            }
+            string temp = string.Join("", tempChar);
+            return temp;
+        }
+
+        private static bool[] getCapitalLetterLoc(char[] charArray)
+        {
+            char[] localArray = new char[charArray.Length];
+            Array.Copy(charArray, localArray, localArray.Length);
+
+            bool[] isUpper = new bool[localArray.Length];
+            char temp;
+            for (int i = 0; i < localArray.Length; i++)
+            {
+                temp = localArray[i];
+                isUpper[i] = char.IsUpper(localArray[i]);
+            }
+            return isUpper;
         }
 
         private static string[] StringSplit(string input, out bool empty)
